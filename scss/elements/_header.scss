@@ -1,0 +1,19 @@
+#global_header {
+	padding: 1rem 0 0;
+	border-bottom: 2px solid $charcoal;
+
+	ul {
+		list-style: none;
+
+		li {
+			background: $charcoal;
+			float: left;
+
+			a {
+				display: inline-block;
+				color: $white;
+				padding: 1rem;
+			}
+		}
+	}
+}
