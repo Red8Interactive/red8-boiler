@@ -13,3 +13,18 @@
 		padding: 2rem 0;
 	}
 }
+
+// WP Image Alignment Classes
+.alignleft {
+	float: left;
+	margin-right: 10px;
+}
+
+.alignright {
+	float: right;
+	margin-left: 10px;
+}
+
+.aligncenter {
+	margin: 10px auto;
+}
