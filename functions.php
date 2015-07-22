@@ -42,7 +42,7 @@ function boiler_setup() {
 endif; // boiler_setup
 add_action( 'after_setup_theme', 'boiler_setup' );
 
-// add parent class to menu items 
+// add parent class to menu items
 add_filter( 'wp_nav_menu_objects', 'add_menu_parent_class' );
 function add_menu_parent_class( $items ) {
 
@@ -52,17 +52,17 @@ function add_menu_parent_class( $items ) {
 			$parents[] = $item->menu_item_parent;
 		}
 	}
-	
+
 	foreach ( $items as $item ) {
 		if ( in_array( $item->ID, $parents ) ) {
-			$item->classes[] = 'parent-item'; 
+			$item->classes[] = 'parent-item';
 		}
 	}
-	
+
 	return $items;
 }
 
-	
+
 /* remove some of the header bloat */
 
 // EditURI link
@@ -139,8 +139,8 @@ function boiler_scripts_styles() {
 	//wp_enqueue_script( 'boiler-plugins', get_template_directory_uri() . '/js/plugins.js', array(), '20120206', true );
 
 	//wp_enqueue_script( 'boiler-main', get_template_directory_uri() . '/js/main.js', array(), '20120205', true );
-	
-	// Return concatenated version of JS. If you add a new JS file add it to the concatenation queue in the gruntfile. 
+
+	// Return concatenated version of JS. If you add a new JS file add it to the concatenation queue in the gruntfile.
 	// current files: js/vendor.mordernizr-2.6.2.min.js, js/plugins.js, js/main.js
 	wp_enqueue_script( 'boiler-concat', get_template_directory_uri() . '/js/built.min.js', array(), '', true );
 
@@ -173,3 +173,30 @@ function wrap_embed_with_div($html, $url, $attr) {
 }
 
 add_filter('embed_oembed_html', 'wrap_embed_with_div', 10, 3);
+
+// Function for adding ACF fields into Yoast SEO check
+if ( is_admin() ) { // check to make sure we aren't on the front end
+	add_filter('wpseo_pre_analysis_post_content', 'add_custom_to_yoast');
+
+	function add_custom_to_yoast( $content ) {
+		global $post;
+		$pid = $post->ID;
+
+		$custom = get_post_custom($pid);
+		unset($custom['_yoast_wpseo_focuskw']); // Don't count the keyword in the Yoast field!
+
+		foreach( $custom as $key => $value ) {
+			if( substr( $key, 0, 1 ) != '_' && substr( $value[0], -1) != '}' && !is_array($value[0]) && !empty($value[0])) {
+			  $custom_content .= $value[0] . ' ';
+			}
+
+		}
+
+		$content = $content . ' ' . $custom_content;
+		return $content;
+
+		remove_filter('wpseo_pre_analysis_post_content', 'add_custom_to_yoast'); // don't let WP execute this twice
+	}
+}
+
+add_action( 'add_meta_boxes', 'remove_meta_boxes_listings' );
