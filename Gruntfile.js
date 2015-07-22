@@ -13,8 +13,9 @@ module.exports = function (grunt) {
       sass: {
         dist: {
           options: {
-            style: 'compressed',
+            style: 'compact',
             loadPath: 'scss/*.scss',
+            lineNumbers: true,
             //sourcemap: true,
             quiet: true,
           },
