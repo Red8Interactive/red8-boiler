@@ -25,7 +25,7 @@ module.exports = function (grunt) {
           },
         },
       },
-      
+
       // grunt-contrib-concat
       // Concatenates JS files in order
       concat: {
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
           dest: 'js/built.js',
         },
       },
-      
+
       // grunt-contrib-uglify
       // Minifies js files
       uglify: {
@@ -108,13 +108,28 @@ module.exports = function (grunt) {
           },
         },
       },
+
+      browserSync: {
+          bsFiles: {
+              src: [
+                  'css/main.css',
+                  'js/main.js',
+                  '*.php'
+              ]
+          },
+          options: {
+              watchTask: true,
+              proxy: 'red8-boiler.dev'
+          }
+      }
   });
 
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-browser-sync');
   grunt.loadNpmTasks('grunt-php');
 
-  grunt.registerTask('default', ['watch', 'php', 'sass']);
+  grunt.registerTask('default', ['browserSync', 'watch', 'php', 'sass']);
 };
