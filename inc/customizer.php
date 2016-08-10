@@ -1,8 +1,8 @@
 <?php
 /**
- * boiler Theme Customizer
+ * red8 Theme Customizer.
  *
- * @package boiler
+ * @package red8
  */
 
 /**
@@ -10,42 +10,17 @@
  *
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
-function boiler_customize_register( $wp_customize ) {
+function red8_customize_register( $wp_customize ) {
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
+	$wp_customize->get_setting( 'header_textcolor' )->transport = 'postMessage';
 }
-add_action( 'customize_register', 'boiler_customize_register' );
-
-/**
- * Add site info to footer
- */
-function boiler_customize_site_info( $wp_customize ) {
-	// First thing is to add a secion
-	$wp_customize->add_section( 'site_info_section', array(
-		'title' => __( 'Site Info', '_s' ),
-		'priority' => '35',
-		'description' => __( 'The label and text for the phone number', '_s' )
-	) );
-
-	// Add a setting that will be customizable
-	$wp_customize->add_setting( 'site_info', array(
-		'default' => 'Site Info',
-		'transport' => 'postMessage'
-	) );
-
-	// Add a control to bind the setting to the section
-	$wp_customize->add_control( 'site_info', array(
-		'label' => __('Site Info', '_s' ),
-		'section' => 'site_info_section',
-		'type' => 'text'
-	) );
-}
-add_action( 'customize_register', 'boiler_customize_site_info' );
+add_action( 'customize_register', 'red8_customize_register' );
 
 /**
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
  */
-function boiler_customize_preview_js() {
-	wp_enqueue_script( 'boiler_customizer', get_template_directory_uri() . '/js/customizer.js', array( 'customize-preview' ), '20130508', true );
+function red8_customize_preview_js() {
+	wp_enqueue_script( 'red8_customizer', get_template_directory_uri() . '/js/customizer.js', array( 'customize-preview' ), '20151215', true );
 }
-add_action( 'customize_preview_init', 'boiler_customize_preview_js' );
+add_action( 'customize_preview_init', 'red8_customize_preview_js' );

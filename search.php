@@ -1,41 +1,48 @@
 <?php
 /**
- * The template for displaying Search Results pages.
+ * The template for displaying search results pages.
  *
- * @package boiler
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
+ *
+ * @package red8
  */
 
 get_header(); ?>
 
-	<section class="container">
-	
-		<div class="content">
+	<section id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
 
-			<?php if ( have_posts() ) : ?>
-	
-				<header>
-					<h1><?php printf( __( 'Search Results for: %s', 'boiler' ), '<span>' . get_search_query() . '</span>' ); ?></h1>
-				</header>
-	
-				<?php /* Start the Loop */ ?>
-				<?php while ( have_posts() ) : the_post(); ?>
-	
-					<?php get_template_part( 'content', 'search' ); ?>
-	
-				<?php endwhile; ?>
-	
-				<?php boiler_content_nav( 'nav-below' ); ?>
-	
-			<?php else : ?>
-	
-				<?php get_template_part( 'no-results', 'search' ); ?>
-	
-			<?php endif; ?>
-		
-		</div>
-		
-		<?php get_sidebar(); ?>
-		
-	</section>
+		<?php
+		if ( have_posts() ) : ?>
 
-<?php get_footer(); ?>
+			<header class="page-header">
+				<h1 class="page-title"><?php printf( esc_html__( 'Search Results for: %s', 'red8' ), '<span>' . get_search_query() . '</span>' ); ?></h1>
+			</header><!-- .page-header -->
+
+			<?php
+			/* Start the Loop */
+			while ( have_posts() ) : the_post();
+
+				/**
+				 * Run the loop for the search to output the results.
+				 * If you want to overload this in a child theme then include a file
+				 * called content-search.php and that will be used instead.
+				 */
+				get_template_part( 'template-parts/content', 'search' );
+
+			endwhile;
+
+			the_posts_navigation();
+
+		else :
+
+			get_template_part( 'template-parts/content', 'none' );
+
+		endif; ?>
+
+		</main><!-- #main -->
+	</section><!-- #primary -->
+
+<?php
+get_sidebar();
+get_footer();

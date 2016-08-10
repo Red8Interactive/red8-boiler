@@ -1,151 +1,135 @@
 <?php
 /**
- * boiler functions and definitions
+ * red8 functions and definitions.
  *
- * @package boiler
+ * @link https://developer.wordpress.org/themes/basics/theme-functions/
+ *
+ * @package red8
  */
 
-if ( ! function_exists( 'boiler_setup' ) ) :
+if ( ! function_exists( 'red8_setup' ) ) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
- * Note that this function is hooked into the after_setup_theme hook, which runs
- * before the init hook. The init hook is too late for some features, such as indicating
- * support post thumbnails.
+ * Note that this function is hooked into the after_setup_theme hook, which
+ * runs before the init hook. The init hook is too late for some features, such
+ * as indicating support for post thumbnails.
  */
-function boiler_setup() {
-
-	/**
-	 * Add default posts and comments RSS feed links to head
+function red8_setup() {
+	/*
+	 * Make theme available for translation.
+	 * Translations can be filed in the /languages/ directory.
+	 * If you're building a theme based on red8, use a find and replace
+	 * to change 'red8' to the name of your theme in all the template files.
 	 */
+	load_theme_textdomain( 'red8', get_template_directory() . '/languages' );
+
+	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
 
-	/**
-	 * Enable support for Post Thumbnails on posts and pages
+	/*
+	 * Let WordPress manage the document title.
+	 * By adding theme support, we declare that this theme does not use a
+	 * hard-coded <title> tag in the document head, and expect WordPress to
+	 * provide it for us.
+	 */
+	add_theme_support( 'title-tag' );
+
+	/*
+	 * Enable support for Post Thumbnails on posts and pages.
 	 *
-	 * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
+	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
 	 */
 	add_theme_support( 'post-thumbnails' );
 
-	/**
-	 * This theme uses wp_nav_menu() in one location.
-	 */
+	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
-		'primary' => __( 'Primary Menu', 'boiler' ),
+		'primary' => esc_html__( 'Primary', 'red8' ),
 	) );
 
-	/**
-	 * Enable support for Post Formats
+	/*
+	 * Switch default core markup for search form, comment form, and comments
+	 * to output valid HTML5.
 	 */
-	add_theme_support( 'post-formats', array( 'aside', 'image', 'video', 'quote', 'link' ) );
+	add_theme_support( 'html5', array(
+		'search-form',
+		'comment-form',
+		'comment-list',
+		'gallery',
+		'caption',
+	) );
+
+	/*
+	 * Enable support for Post Formats.
+	 * See https://developer.wordpress.org/themes/functionality/post-formats/
+	 */
+	add_theme_support( 'post-formats', array(
+		'aside',
+		'image',
+		'video',
+		'quote',
+		'link',
+	) );
+
+	// Set up the WordPress core custom background feature.
+	add_theme_support( 'custom-background', apply_filters( 'red8_custom_background_args', array(
+		'default-color' => 'ffffff',
+		'default-image' => '',
+	) ) );
 }
-endif; // boiler_setup
-add_action( 'after_setup_theme', 'boiler_setup' );
-
-// add parent class to menu items 
-add_filter( 'wp_nav_menu_objects', 'add_menu_parent_class' );
-function add_menu_parent_class( $items ) {
-
-	$parents = array();
-	foreach ( $items as $item ) {
-		if ( $item->menu_item_parent && $item->menu_item_parent > 0 ) {
-			$parents[] = $item->menu_item_parent;
-		}
-	}
-	
-	foreach ( $items as $item ) {
-		if ( in_array( $item->ID, $parents ) ) {
-			$item->classes[] = 'parent-item'; 
-		}
-	}
-	
-	return $items;
-}
-
-	
-/* remove some of the header bloat */
-
-// EditURI link
-remove_action( 'wp_head', 'rsd_link' );
-// windows live writer
-remove_action( 'wp_head', 'wlwmanifest_link' );
-// index link
-remove_action( 'wp_head', 'index_rel_link' );
-// previous link
-remove_action( 'wp_head', 'parent_post_rel_link', 10, 0 );
-// start link
-remove_action( 'wp_head', 'start_post_rel_link', 10, 0 );
-// links for adjacent posts
-remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
-// WP version
-remove_action( 'wp_head', 'wp_generator' );
-
-// remove pesky injected css for recent comments widget
-add_filter( 'wp_head', 'boiler_remove_wp_widget_recent_comments_style', 1 );
-// clean up comment styles in the head
-add_action('wp_head', 'boiler_remove_recent_comments_style', 1);
-// clean up gallery output in wp
-add_filter('gallery_style', 'boiler_gallery_style');
-
-// Thumbnail image sizes
-// add_image_size( 'thumb-400', 400, 400, true );
-
-// remove injected CSS for recent comments widget
-function boiler_remove_wp_widget_recent_comments_style() {
-   if ( has_filter('wp_head', 'wp_widget_recent_comments_style') ) {
-      remove_filter('wp_head', 'wp_widget_recent_comments_style' );
-   }
-}
-
-// remove injected CSS from recent comments widget
-function boiler_remove_recent_comments_style() {
-  global $wp_widget_factory;
-  if (isset($wp_widget_factory->widgets['WP_Widget_Recent_Comments'])) {
-    remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'));
-  }
-}
-
-// remove injected CSS from gallery
-function boiler_gallery_style($css) {
-  return preg_replace("!<style type='text/css'>(.*?)</style>!s", '', $css);
-}
+endif;
+add_action( 'after_setup_theme', 'red8_setup' );
 
 /**
- * Register widgetized area and update sidebar with default widgets
+ * Set the content width in pixels, based on the theme's design and stylesheet.
+ *
+ * Priority 0 to make it available to lower priority callbacks.
+ *
+ * @global int $content_width
  */
-function boiler_widgets_init() {
+function red8_content_width() {
+	$GLOBALS['content_width'] = apply_filters( 'red8_content_width', 640 );
+}
+add_action( 'after_setup_theme', 'red8_content_width', 0 );
+
+/**
+ * Register widget area.
+ *
+ * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
+ */
+function red8_widgets_init() {
 	register_sidebar( array(
-		'name'          => __( 'Sidebar', 'boiler' ),
+		'name'          => esc_html__( 'Sidebar', 'red8' ),
 		'id'            => 'sidebar-1',
-		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-		'after_widget'  => '</aside>',
-		'before_title'  => '<h1 class="widget-title">',
-		'after_title'   => '</h1>',
+		'description'   => esc_html__( 'Add widgets here.', 'red8' ),
+		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>',
 	) );
 }
-add_action( 'widgets_init', 'boiler_widgets_init' );
+add_action( 'widgets_init', 'red8_widgets_init' );
 
 /**
- * Enqueue scripts and styles
+ * Enqueue scripts and styles.
  */
-function boiler_scripts_styles() {
-	// style.css just initializes the theme. This is compiled from /sass
-	wp_enqueue_style( 'main-style', get_template_directory_uri() . '/css/main.css');
+function red8_scripts() {
+	wp_enqueue_style( 'red8-style', get_stylesheet_uri() );
 
-	wp_enqueue_script( 'jquery' , array(), '', true );
+	wp_enqueue_script( 'red8-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
-	//wp_enqueue_script( 'modernizr', get_template_directory_uri() . '/js/vendor/modernizr-2.6.2.min.js', '2.6.2', true );
+	wp_enqueue_script( 'red8-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 
-	//wp_enqueue_script( 'boiler-plugins', get_template_directory_uri() . '/js/plugins.js', array(), '20120206', true );
-
-	//wp_enqueue_script( 'boiler-main', get_template_directory_uri() . '/js/main.js', array(), '20120205', true );
-	
-	// Return concatenated version of JS. If you add a new JS file add it to the concatenation queue in the gruntfile. 
-	// current files: js/vendor.mordernizr-2.6.2.min.js, js/plugins.js, js/main.js
-	wp_enqueue_script( 'boiler-concat', get_template_directory_uri() . '/js/built.min.js', array(), '', true );
-
+	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
+		wp_enqueue_script( 'comment-reply' );
+	}
 }
-add_action( 'wp_enqueue_scripts', 'boiler_scripts_styles' );
+add_action( 'wp_enqueue_scripts', 'red8_scripts' );
+
+/**
+ * Implement the Custom Header feature.
+ */
+require get_template_directory() . '/inc/custom-header.php';
 
 /**
  * Custom template tags for this theme.
@@ -158,18 +142,11 @@ require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/extras.php';
 
 /**
- * Load Jetpack compatibility file.
- */
-require get_template_directory() . '/inc/jetpack.php';
-
-/**
  * Customizer additions.
  */
 require get_template_directory() . '/inc/customizer.php';
 
-// Auto wrap embeds with video container to make video responsive
-function wrap_embed_with_div($html, $url, $attr) {
-     return '<div class="video_container">' . $html . '</div>';
-}
-
-add_filter('embed_oembed_html', 'wrap_embed_with_div', 10, 3);
+/**
+ * Load Jetpack compatibility file.
+ */
+require get_template_directory() . '/inc/jetpack.php';

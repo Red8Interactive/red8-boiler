@@ -4,34 +4,35 @@
  *
  * This is the template that displays all pages by default.
  * Please note that this is the WordPress construct of pages
- * and that other 'pages' on your WordPress site will use a
+ * and that other 'pages' on your WordPress site may use a
  * different template.
  *
- * @package boiler
+ * @link https://codex.wordpress.org/Template_Hierarchy
+ *
+ * @package red8
  */
 
 get_header(); ?>
 
-	<section class="container">
-	
-		<article class="content">
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
 
-			<?php while ( have_posts() ) : the_post(); ?>
-	
-				<?php get_template_part( 'content', 'page' ); ?>
-	
-				<?php
-					// If comments are open or we have at least one comment, load up the comment template
-					if ( comments_open() || '0' != get_comments_number() )
-						comments_template();
-				?>
-	
-			<?php endwhile; // end of the loop. ?>
-			
-		</article>
-		
-		<?php get_sidebar(); ?>
-		
-	</section>
+			<?php
+			while ( have_posts() ) : the_post();
 
-<?php get_footer(); ?>
+				get_template_part( 'template-parts/content', 'page' );
+
+				// If comments are open or we have at least one comment, load up the comment template.
+				if ( comments_open() || get_comments_number() ) :
+					comments_template();
+				endif;
+
+			endwhile; // End of the loop.
+			?>
+
+		</main><!-- #main -->
+	</div><!-- #primary -->
+
+<?php
+get_sidebar();
+get_footer();
