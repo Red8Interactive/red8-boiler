@@ -120,3 +120,16 @@ function red8_category_transient_flusher() {
 }
 add_action( 'edit_category', 'red8_category_transient_flusher' );
 add_action( 'save_post',     'red8_category_transient_flusher' );
+
+/**
+ * Displays the optional custom logo.
+ *
+ * Does nothing if the custom logo is not available
+ *
+ * @since red8 1.0
+ */
+ function red8_the_custom_logo() {
+	 if ( function_exists( 'the_custom_logo') ) {
+		 the_custom_logo();
+	 }
+ }

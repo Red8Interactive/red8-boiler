@@ -71,6 +71,15 @@ function red8_setup() {
 		'link',
 	) );
 
+	/*
+	 * Enable support for custom logo.
+	 */
+	add_theme_support( 'custom-logo', array(
+		'height'		=> 79,
+		'width'			=> 314,
+		'flex-height'	=> true
+	));
+
 	// Set up the WordPress core custom background feature.
 	add_theme_support( 'custom-background', apply_filters( 'red8_custom_background_args', array(
 		'default-color' => 'ffffff',
